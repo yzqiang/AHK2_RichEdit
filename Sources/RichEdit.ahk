@@ -115,7 +115,14 @@ Class RichEdit {
    ; DESTRUCTOR
    ; ===================================================================================================================
    __Delete() {
-      If DllCall("IsWindow", "Ptr", This.HWND) && (RichEdit.SubclassCB) {
+      ; 尹志强修改：会造成This.RE已经销毁并且找不到This.RE.Hwnd
+      try
+         result := DllCall("IsWindow", "Ptr", This.HWND)
+      catch
+         result := false
+
+      If result && (RichEdit.SubclassCB) {
+      ; If DllCall("IsWindow", "Ptr", This.HWND) && (RichEdit.SubclassCB) {
          DllCall("RemoveWindowSubclass", "Ptr", This.HWND, "Ptr", RichEdit.SubclassCB, "Ptr", 0)
       }
       This.RE := 0
